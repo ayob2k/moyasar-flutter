@@ -28,7 +28,7 @@ class PaymentConfig {
   Map<String, dynamic>? metadata;
 
   /// Optional configuration used to set accepted card networks.
-  /// Supported Networks: ["amex", "visa", "mada", "masterCard"]
+  /// Supported Networks: ["amex", "visa", "mada", "mastercard"]
   List<String> supportedNetworks;
 
   /// The config required to setup Apple Pay.
@@ -43,7 +43,7 @@ class PaymentConfig {
       this.currency = 'SAR',
       required this.description,
       this.metadata,
-      this.supportedNetworks = const ["amex", "visa", "mada", "masterCard"],
+      this.supportedNetworks = const ["amex", "visa", "mada", "mastercard"],
       this.applePay,
       this.creditCard})
       : assert(publishableApiKey.isNotEmpty,

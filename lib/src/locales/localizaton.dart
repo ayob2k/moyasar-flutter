@@ -24,6 +24,8 @@ class Localization {
 
   final String saveCardNotice;
 
+  final String unsupportedCard;
+
   const Localization.en(
       {this.languageCode = 'en',
       this.nameOnCard = 'Name on Card',
@@ -41,6 +43,7 @@ class Localization {
       this.cvcRequired = 'Security code is required',
       this.invalidCvc = 'Invalid security code',
       this.pay = 'Pay',
+      this.unsupportedCard = 'Unsupported card',
       this.saveCardNotice = 'Your card data will be saved upon submit.'});
 
   const Localization.ar(
@@ -60,5 +63,6 @@ class Localization {
       this.cvcRequired = 'رمز التحقق مطلوب',
       this.invalidCvc = 'رمز التحقق غير صحيح',
       this.pay = 'ادفع',
+      this.unsupportedCard = 'بطاقة غير مدعومة',
       this.saveCardNotice = 'سيتم حفظ بيانات البطاقة عند إتمام العملية.'});
 }

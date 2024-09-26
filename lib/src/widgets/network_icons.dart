@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 
 /// The widget that shows the Credit Cards icons.
 class NetworkIcons extends StatelessWidget {
-  const NetworkIcons({super.key});
+  final List<String> networks;
+  const NetworkIcons({super.key, required this.networks});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    List<Widget> icons = [];
+
+    for (var network in networks) {
+      icons.add(NetworkIcon(name: 'assets/images/$network.png'));
+    }
+
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        NetworkIcon(name: 'assets/images/visa.png'),
-        NetworkIcon(name: 'assets/images/mada.png'),
-        NetworkIcon(name: 'assets/images/mastercard.png'),
-        NetworkIcon(name: 'assets/images/amex.png'),
-        SizedBox(
-          width: 10,
-        ),
-      ],
+      children: [...icons, SizedBox(width: 10)],
     );
   }
 }

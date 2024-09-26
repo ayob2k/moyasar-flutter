@@ -130,9 +130,19 @@ class _CreditCardState extends State<CreditCard> {
             inputDecoration: buildInputDecoration(
                 hintText: widget.locale.cardNumber,
                 hintTextDirection: widget.textDirection,
-                addNetworkIcons: true),
-            validator: (String? input) =>
-                CardUtils.validateCardNum(input, widget.locale),
+                networks: widget.config.supportedNetworks),
+            validator: (String? input) {
+              String? cardError =
+                  CardUtils.validateCardNum(input, widget.locale);
+              if (cardError != null) {
+                return cardError;
+              }
+              if (!widget.config.supportedNetworks
+                  .contains(CardUtils.getCardType(input!))) {
+                return widget.locale.unsupportedCard;
+              }
+              return null;
+            },
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(16),
@@ -277,9 +287,9 @@ String showAmount(int amount, String currency, Localization locale) {
 InputDecoration buildInputDecoration(
     {required String hintText,
     required TextDirection hintTextDirection,
-    bool addNetworkIcons = false}) {
+    List<String>? networks}) {
   return InputDecoration(
-      suffixIcon: addNetworkIcons ? const NetworkIcons() : null,
+      suffixIcon: networks != null ? NetworkIcons(networks: networks) : null,
       hintText: hintText,
       hintTextDirection: hintTextDirection,
       focusedErrorBorder: defaultErrorBorder,

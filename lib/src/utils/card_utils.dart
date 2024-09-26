@@ -83,6 +83,20 @@ class CardUtils {
     }
     return CardCompany.visa;
   }
+
+  static String getCardType(String input) {
+    if (input.startsWith(RegExp(
+        r'((5[1-5])|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720))'))) {
+      return 'mastercard';
+    } else if (input.startsWith(RegExp(r'((34)|(37))'))) {
+      return 'amex';
+    } else if (input.startsWith(RegExp(r'[4]'))) {
+      return 'visa';
+    } else if (input.startsWith(RegExp(r'((50)|(56)|(57)|(58)|(6[0-9]))'))) {
+      return 'mada';
+    }
+    return 'unknown';
+  }
 }
 
 bool isValidLuhn(String cardNumber) {
