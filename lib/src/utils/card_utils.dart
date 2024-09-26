@@ -188,7 +188,7 @@ class CardUtils {
       '224020',
       '411111'
     ];
-
+    print(cardNumber.substring(0, 6));
     // Check card type based on regex matching
     if (visaRegExp.hasMatch(cardNumber)) {
       return 'visa';
