@@ -90,7 +90,11 @@ class CardUtils {
       return 'mastercard';
     } else if (input.startsWith(RegExp(r'((34)|(37))'))) {
       return 'amex';
-    } else if (input.startsWith(RegExp(r'[4]'))) {
+    } else if (input
+        .startsWith(RegExp(r'((4[0-9]{12}(?:[0-9]{3})?)|(4[0-9]{6,}$))'))) {
+      if (input.startsWith(RegExp(r'((50)|(56)|(57)|(58)|(6[0-9]))'))) {
+        return 'mada';
+      }
       return 'visa';
     } else if (input.startsWith(RegExp(r'((50)|(56)|(57)|(58)|(6[0-9]))'))) {
       return 'mada';
