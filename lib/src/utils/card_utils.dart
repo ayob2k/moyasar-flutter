@@ -188,19 +188,17 @@ class CardUtils {
       '224020',
       '411111'
     ];
-    print(cardNumber.substring(0, 6));
     // Check card type based on regex matching
-    if (visaRegExp.hasMatch(cardNumber)) {
+    if (madaRange.contains(cardNumber.substring(0, 6))) {
+      return 'mada';
+    } else if (visaRegExp.hasMatch(cardNumber)) {
       return 'visa';
     } else if (masterCardRegExp.hasMatch(cardNumber)) {
       return 'mastercard';
     } else if (amexRegExp.hasMatch(cardNumber)) {
       return 'amex';
-    } else if (madaRange.contains(cardNumber.substring(0, 6))) {
-      return 'mada';
-    } else {
-      return 'unknown';
     }
+    return 'unknown';
   }
 }
 
