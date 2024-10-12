@@ -101,9 +101,8 @@ class _CreditCardState extends State<CreditCard> {
                         message;
                   }
                   Navigator.pop(context);
-
-                  widget.onPaymentResult(result);
                   setState(() => _isSubmitting = false);
+                  widget.onPaymentResult(result);
                 })),
       );
     }
