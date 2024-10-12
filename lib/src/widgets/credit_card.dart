@@ -72,8 +72,6 @@ class _CreditCardState extends State<CreditCard> {
         apiKey: widget.config.publishableApiKey,
         paymentRequest: paymentRequest);
 
-    setState(() => _isSubmitting = false);
-
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
       widget.onPaymentResult(result);
@@ -84,7 +82,7 @@ class _CreditCardState extends State<CreditCard> {
         (result.source as CardPaymentResponseSource).transactionUrl;
 
     if (mounted) {
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
@@ -106,6 +104,7 @@ class _CreditCardState extends State<CreditCard> {
                 })),
       );
     }
+    setState(() => _isSubmitting = false);
   }
 
   @override
