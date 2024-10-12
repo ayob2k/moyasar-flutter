@@ -193,8 +193,8 @@ class _CreditCardState extends State<CreditCard> {
                       style: ButtonStyle(
                         minimumSize: const WidgetStatePropertyAll<Size>(
                             Size.fromHeight(55)),
-                        backgroundColor:
-                            WidgetStatePropertyAll<Color>(blueColor),
+                        backgroundColor: WidgetStatePropertyAll<Color>(
+                            Theme.of(context).colorScheme.secondary),
                       ),
                       onPressed: _isSubmitting ? () {} : _saveForm,
                       child: _isSubmitting
