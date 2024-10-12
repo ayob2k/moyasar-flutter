@@ -75,6 +75,7 @@ class _CreditCardState extends State<CreditCard> {
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
       widget.onPaymentResult(result);
+      setState(() => _isSubmitting = false);
       return;
     }
 
@@ -82,7 +83,7 @@ class _CreditCardState extends State<CreditCard> {
         (result.source as CardPaymentResponseSource).transactionUrl;
 
     if (mounted) {
-      await Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(
             fullscreenDialog: true,
@@ -100,11 +101,12 @@ class _CreditCardState extends State<CreditCard> {
                         message;
                   }
                   Navigator.pop(context);
+
                   widget.onPaymentResult(result);
+                  setState(() => _isSubmitting = false);
                 })),
       );
     }
-    setState(() => _isSubmitting = false);
   }
 
   @override
