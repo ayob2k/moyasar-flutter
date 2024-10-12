@@ -113,102 +113,109 @@ class _CreditCardState extends State<CreditCard> {
     return Form(
       autovalidateMode: _autoValidateMode,
       key: _formKey,
-      child: Column(
-        children: [
-          CardFormField(
-              inputDecoration: buildInputDecoration(
-                  hintText: widget.locale.nameOnCard,
-                  hintTextDirection: widget.textDirection),
-              keyboardType: TextInputType.text,
-              validator: (String? input) =>
-                  CardUtils.validateName(input, widget.locale),
-              onSaved: (value) => _cardData.name = value ?? '',
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z. ]')),
-              ]),
-          CardFormField(
-            inputDecoration: buildInputDecoration(
-                hintText: widget.locale.cardNumber,
-                hintTextDirection: widget.textDirection,
-                networks: widget.config.supportedNetworks),
-            validator: (String? input) {
-              String? cardError =
-                  CardUtils.validateCardNum(input, widget.locale);
-              if (cardError != null) {
-                return cardError;
-              }
-              if (!widget.config.supportedNetworks
-                  .contains(CardUtils.getCardType(input!))) {
-                return widget.locale.unsupportedCard;
-              }
-              return null;
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(16),
-              CardNumberInputFormatter(),
-            ],
-            onSaved: (value) =>
-                _cardData.number = CardUtils.getCleanedNumber(value!),
-          ),
-          CardFormField(
-            inputDecoration: buildInputDecoration(
-              hintText: '${widget.locale.expiry} (MM / YY)',
-              hintTextDirection: widget.textDirection,
-            ),
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(4),
-              CardMonthInputFormatter(),
-            ],
-            validator: (String? input) =>
-                CardUtils.validateDate(input, widget.locale),
-            onSaved: (value) {
-              List<String> expireDate = CardUtils.getExpiryDate(value!);
-              _cardData.month = expireDate.first;
-              _cardData.year = expireDate[1];
-            },
-          ),
-          CardFormField(
-            inputDecoration: buildInputDecoration(
-              hintText: widget.locale.cvc,
-              hintTextDirection: widget.textDirection,
-            ),
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(4),
-            ],
-            validator: (String? input) =>
-                CardUtils.validateCVC(input, widget.locale),
-            onSaved: (value) => _cardData.cvc = value ?? '',
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: SizedBox(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize:
-                      const WidgetStatePropertyAll<Size>(Size.fromHeight(55)),
-                  backgroundColor: WidgetStatePropertyAll<Color>(blueColor),
+      child: _isSubmitting
+          ? Center(
+              child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.secondary,
+            ))
+          : Column(
+              children: [
+                CardFormField(
+                    inputDecoration: buildInputDecoration(
+                        hintText: widget.locale.nameOnCard,
+                        hintTextDirection: widget.textDirection),
+                    keyboardType: TextInputType.text,
+                    validator: (String? input) =>
+                        CardUtils.validateName(input, widget.locale),
+                    onSaved: (value) => _cardData.name = value ?? '',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[a-zA-Z. ]')),
+                    ]),
+                CardFormField(
+                  inputDecoration: buildInputDecoration(
+                      hintText: widget.locale.cardNumber,
+                      hintTextDirection: widget.textDirection,
+                      networks: widget.config.supportedNetworks),
+                  validator: (String? input) {
+                    String? cardError =
+                        CardUtils.validateCardNum(input, widget.locale);
+                    if (cardError != null) {
+                      return cardError;
+                    }
+                    if (!widget.config.supportedNetworks
+                        .contains(CardUtils.getCardType(input!))) {
+                      return widget.locale.unsupportedCard;
+                    }
+                    return null;
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(16),
+                    CardNumberInputFormatter(),
+                  ],
+                  onSaved: (value) =>
+                      _cardData.number = CardUtils.getCleanedNumber(value!),
                 ),
-                onPressed: _isSubmitting ? () {} : _saveForm,
-                child: _isSubmitting
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      )
-                    : Text(
-                        showAmount(widget.config.amount, widget.config.currency,
-                            widget.locale),
-                        style: const TextStyle(color: Colors.white),
-                        textDirection: widget.textDirection,
+                CardFormField(
+                  inputDecoration: buildInputDecoration(
+                    hintText: '${widget.locale.expiry} (MM / YY)',
+                    hintTextDirection: widget.textDirection,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(4),
+                    CardMonthInputFormatter(),
+                  ],
+                  validator: (String? input) =>
+                      CardUtils.validateDate(input, widget.locale),
+                  onSaved: (value) {
+                    List<String> expireDate = CardUtils.getExpiryDate(value!);
+                    _cardData.month = expireDate.first;
+                    _cardData.year = expireDate[1];
+                  },
+                ),
+                CardFormField(
+                  inputDecoration: buildInputDecoration(
+                    hintText: widget.locale.cvc,
+                    hintTextDirection: widget.textDirection,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(4),
+                  ],
+                  validator: (String? input) =>
+                      CardUtils.validateCVC(input, widget.locale),
+                  onSaved: (value) => _cardData.cvc = value ?? '',
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: SizedBox(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        minimumSize: const WidgetStatePropertyAll<Size>(
+                            Size.fromHeight(55)),
+                        backgroundColor:
+                            WidgetStatePropertyAll<Color>(blueColor),
                       ),
-              ),
+                      onPressed: _isSubmitting ? () {} : _saveForm,
+                      child: _isSubmitting
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            )
+                          : Text(
+                              showAmount(widget.config.amount,
+                                  widget.config.currency, widget.locale),
+                              style: const TextStyle(color: Colors.white),
+                              textDirection: widget.textDirection,
+                            ),
+                    ),
+                  ),
+                ),
+                SaveCardNotice(
+                    tokenizeCard: _tokenizeCard, locale: widget.locale)
+              ],
             ),
-          ),
-          SaveCardNotice(tokenizeCard: _tokenizeCard, locale: widget.locale)
-        ],
-      ),
     );
   }
 }
