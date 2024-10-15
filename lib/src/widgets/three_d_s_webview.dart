@@ -5,11 +5,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 /// The widget that shows the 3DS step.
 class ThreeDSWebView extends StatefulWidget {
   final String transactionUrl;
-  final Function on3dsDone;
   final Uri callbackUri = Uri.parse(PaymentConfig.callbackUrl);
 
-  ThreeDSWebView(
-      {super.key, required this.transactionUrl, required this.on3dsDone});
+  ThreeDSWebView({super.key, required this.transactionUrl});
 
   @override
   State<ThreeDSWebView> createState() => _ThreeDSWebViewState();

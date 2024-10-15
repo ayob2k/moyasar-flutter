@@ -83,14 +83,16 @@ class _CreditCardState extends State<CreditCard> {
         (result.source as CardPaymentResponseSource).transactionUrl;
 
     print("transactionUrl: $transactionUrl");
-    final threeDSResult = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          fullscreenDialog: true,
-          maintainState: false,
-          builder: (context) => ThreeDSWebView(
-              transactionUrl: transactionUrl,
-              on3dsDone: (String status, String message) async {})),
+    final threeDSResult = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ThreeDSWebView(
+            transactionUrl: transactionUrl,
+          ),
+        );
+      },
     );
     print("threeDSResult: $threeDSResult");
     if (threeDSResult != null) {
