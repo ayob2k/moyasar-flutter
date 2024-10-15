@@ -82,30 +82,31 @@ class _CreditCardState extends State<CreditCard> {
     final String transactionUrl =
         (result.source as CardPaymentResponseSource).transactionUrl;
 
-    if (mounted) {
-      final threeDSResult = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            fullscreenDialog: true,
-            maintainState: false,
-            builder: (context) => ThreeDSWebView(
-                transactionUrl: transactionUrl,
-                on3dsDone: (String status, String message) async {})),
-      );
-
-      if (threeDSResult != null) {
-        if (threeDSResult['status'] == PaymentStatus.paid.name) {
-          result.status = PaymentStatus.paid;
-        } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
-          result.status = PaymentStatus.authorized;
-        } else {
-          result.status = PaymentStatus.failed;
-          (result.source as CardPaymentResponseSource).message =
-              threeDSResult['message'];
-        }
-        widget.onPaymentResult(result);
-        setState(() => _isSubmitting = false);
+    print("transactionUrl: $transactionUrl");
+    final threeDSResult = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          fullscreenDialog: true,
+          maintainState: false,
+          builder: (context) => ThreeDSWebView(
+              transactionUrl: transactionUrl,
+              on3dsDone: (String status, String message) async {})),
+    );
+    print("threeDSResult: $threeDSResult");
+    if (threeDSResult != null) {
+      print("threeDSResult: $threeDSResult");
+      if (threeDSResult['status'] == PaymentStatus.paid.name) {
+        result.status = PaymentStatus.paid;
+      } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
+        result.status = PaymentStatus.authorized;
+      } else {
+        result.status = PaymentStatus.failed;
+        (result.source as CardPaymentResponseSource).message =
+            threeDSResult['message'];
       }
+      print("result: $result");
+      widget.onPaymentResult(result);
+      setState(() => _isSubmitting = false);
     }
   }
 
