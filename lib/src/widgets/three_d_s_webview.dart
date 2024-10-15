@@ -37,10 +37,7 @@ class _ThreeDSWebViewState extends State<ThreeDSWebView> {
         if (hasReachedFinalRedirection) {
           final queryParams = redirectedTo.queryParameters;
 
-          String status = queryParams['status'] ?? '';
-          String message = queryParams['message'] ?? '';
-
-          widget.on3dsDone(status, message);
+          Navigator.of(context).pop(queryParams);
         }
       }));
 
