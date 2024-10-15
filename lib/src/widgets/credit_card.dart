@@ -32,7 +32,7 @@ class _CreditCardState extends State<CreditCard> {
 
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
 
-  bool _isSubmitting = false;
+  bool isSubmitting = false;
 
   bool _tokenizeCard = false;
 
@@ -66,7 +66,7 @@ class _CreditCardState extends State<CreditCard> {
         manualPayment: _manualPayment);
     final paymentRequest = PaymentRequest(widget.config, source);
 
-    setState(() => _isSubmitting = true);
+    setState(() => isSubmitting = true);
 
     final result = await Moyasar.pay(
         apiKey: widget.config.publishableApiKey,
@@ -75,28 +75,23 @@ class _CreditCardState extends State<CreditCard> {
     if (result is! PaymentResponse ||
         result.status != PaymentStatus.initiated) {
       widget.onPaymentResult(result);
-      setState(() => _isSubmitting = false);
+      setState(() => isSubmitting = false);
       return;
     }
 
     final String transactionUrl =
         (result.source as CardPaymentResponseSource).transactionUrl;
 
-    print("transactionUrl: $transactionUrl");
-    final threeDSResult = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ThreeDSWebView(
-            transactionUrl: transactionUrl,
-          ),
-        );
-      },
+    final threeDSResult = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          fullscreenDialog: true,
+          maintainState: false,
+          builder: (context) => ThreeDSWebView(
+                transactionUrl: transactionUrl,
+              )),
     );
-    print("threeDSResult: $threeDSResult");
     if (threeDSResult != null) {
-      print("threeDSResult: $threeDSResult");
       if (threeDSResult['status'] == PaymentStatus.paid.name) {
         result.status = PaymentStatus.paid;
       } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
@@ -106,23 +101,21 @@ class _CreditCardState extends State<CreditCard> {
         (result.source as CardPaymentResponseSource).message =
             threeDSResult['message'];
       }
-      print("result: $result");
       widget.onPaymentResult(result);
-      setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidateMode: _autoValidateMode,
-      key: _formKey,
-      child: _isSubmitting
-          ? Center(
-              child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.secondary,
-            ))
-          : Column(
+    return isSubmitting
+        ? Center(
+            child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.secondary,
+          ))
+        : Form(
+            autovalidateMode: _autoValidateMode,
+            key: _formKey,
+            child: Column(
               children: [
                 CardFormField(
                     inputDecoration: buildInputDecoration(
@@ -201,8 +194,8 @@ class _CreditCardState extends State<CreditCard> {
                         backgroundColor: WidgetStatePropertyAll<Color>(
                             Theme.of(context).colorScheme.secondary),
                       ),
-                      onPressed: _isSubmitting ? () {} : _saveForm,
-                      child: _isSubmitting
+                      onPressed: isSubmitting ? () {} : _saveForm,
+                      child: isSubmitting
                           ? const CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2,
@@ -220,7 +213,7 @@ class _CreditCardState extends State<CreditCard> {
                     tokenizeCard: _tokenizeCard, locale: widget.locale)
               ],
             ),
-    );
+          );
   }
 }
 
