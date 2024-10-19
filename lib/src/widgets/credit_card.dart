@@ -82,26 +82,29 @@ class _CreditCardState extends State<CreditCard> {
     final String transactionUrl =
         (result.source as CardPaymentResponseSource).transactionUrl;
 
-    final threeDSResult = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          fullscreenDialog: true,
-          maintainState: false,
-          builder: (context) => ThreeDSWebView(
-                transactionUrl: transactionUrl,
-              )),
-    );
-    if (threeDSResult != null) {
-      if (threeDSResult['status'] == PaymentStatus.paid.name) {
-        result.status = PaymentStatus.paid;
-      } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
-        result.status = PaymentStatus.authorized;
-      } else {
-        result.status = PaymentStatus.failed;
-        (result.source as CardPaymentResponseSource).message =
-            threeDSResult['message'];
+    if (mounted) {
+      final threeDSResult = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            maintainState: false,
+            builder: (context) => ThreeDSWebView(
+                  transactionUrl: transactionUrl,
+                )),
+      );
+      setState(() => isSubmitting = false);
+      if (threeDSResult != null) {
+        if (threeDSResult['status'] == PaymentStatus.paid.name) {
+          result.status = PaymentStatus.paid;
+        } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
+          result.status = PaymentStatus.authorized;
+        } else {
+          result.status = PaymentStatus.failed;
+          (result.source as CardPaymentResponseSource).message =
+              threeDSResult['message'];
+        }
+        widget.onPaymentResult(result);
       }
-      widget.onPaymentResult(result);
     }
   }
 
