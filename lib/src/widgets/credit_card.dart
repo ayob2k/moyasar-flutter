@@ -93,6 +93,7 @@ class _CreditCardState extends State<CreditCard> {
     );
 
     if (threeDSResult != null) {
+      setState(() => isSubmitting = false);
       if (threeDSResult['status'] == PaymentStatus.paid.name) {
         result.status = PaymentStatus.paid;
       } else if (threeDSResult['status'] == PaymentStatus.authorized.name) {
@@ -104,7 +105,6 @@ class _CreditCardState extends State<CreditCard> {
       }
       widget.onPaymentResult(result);
     }
-    setState(() => isSubmitting = false);
   }
 
   @override
