@@ -102,8 +102,9 @@ class _CreditCardState extends State<CreditCard> {
         (result.source as CardPaymentResponseSource).message =
             threeDSResult['message'];
       }
-      widget.onPaymentResult(result);
+      await widget.onPaymentResult(result);
     }
+    setState(() => isSubmitting = false);
   }
 
   @override
